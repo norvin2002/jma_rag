@@ -1,0 +1,7 @@
+CATALOG: "workspace_us_east_2"
+SCHEMA: "default"
+VOLUME: "project"
+DIRECTORY: "jma_data"
+TABLE_NAME: "jma_typhoon_data_03"
+INDEX_NAME: "jma_typhoon_data_managed_vs_index3"
+VS_ENDPOINT_NAME: "vs_endpoint_jma"
