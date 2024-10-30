@@ -599,6 +599,10 @@ for (event_id, observation_time), attributes in event_dict.items():
 
 # COMMAND ----------
 
+documents
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC ## A. Creating Spark Dataframe and Delta Table
 
@@ -650,7 +654,7 @@ df = df.withColumn("unique_event_id", F.concat(F.col("EventID"), F.col("Observat
 
 # COMMAND ----------
 
-display(df, limit=5)
+display(df)
 
 # COMMAND ----------
 
@@ -731,10 +735,11 @@ print(f"Endpoint named {vs_endpoint_name} is ready.")
 # COMMAND ----------
 
 # The Delta table containing the content
-source_table_fullname = "workspace_us_east_2.default.jma_typhoon_data_03"
+source_table_fullname = f"{catalog}.{Schema}.{table_name}"
+print(source_table_fullname)
 
 # The Delta table to store vector search index
-vs_index_fullname = f"{catalog}.{Schema}.jma_typhoon_data_managed_vs_index3"
+vs_index_fullname = f"{catalog}.{Schema}.{index_name}"
 
 # COMMAND ----------
 
@@ -772,3 +777,7 @@ else:
 #Let's wait for the index to be ready and all our embeddings to be created and indexed
 wait_for_index_to_be_ready(vsc, vs_endpoint_name, vs_index_fullname)
 print(f"Index {vs_index_fullname} is ready")
+
+# COMMAND ----------
+
+

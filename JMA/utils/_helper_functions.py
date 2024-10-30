@@ -1,4 +1,8 @@
 # Databricks notebook source
+!pip install unstructured
+
+# COMMAND ----------
+
 # Function used to randomly assign each user a VS Endpoint
 def get_fixed_integer(string_input):
     # Calculate the sum of ASCII values of the characters in the input string
@@ -87,7 +91,9 @@ def check_format(string):
         True if the string matches the format, False otherwise.
     """
 
-    pattern = r"^(None|[\w\s]+), (None|\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2})?)?, (None|\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2})?)?"
+    # pattern = r"^(None|[\w\s]+), (None|\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2})?)?, (None|\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2})?)?"
+    pattern = r"^(None|[\w\s]+), (None|\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2})?)?(?:, (''|None|\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2})?))?$"
+
     match = re.match(pattern, string)
 
     return bool(match)
