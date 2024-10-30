@@ -595,70 +595,7 @@ def collect_documents_based_on_parsed_content(parsed_content, spark, catalog, sc
                 | col("TyphoonName_no_hyphen").rlike(f"{typhoon_name_upper}[A-Z]+")
                 | col("TyphoonName_no_hyphen").like(f"%{typhoon_name_upper}%".replace(" ", ""))
             )
-    
-#     # Check if the parsed_content is suitable to retrieve specific documents
-#     if not check_format(parsed_content):  
-#         docs = vectorstore.invoke(query)  # Assuming vectorstore is defined elsewhere
-#         try:
-#             rag_context = " ".join(doc.page_content for row in docs)
-#         except Exception:
-#             rag_context = " ".join([doc.page_content for doc in docs])
-#         return rag_context
-
-#     dates = parsed_content.split(", ")
-    
-#     # Extract text from Spark DataFrame
-#     df = spark.read.format("delta").table(f"{catalog}.{schema}.jma_typhoon_data_03")
-#     df = df.withColumn('ObservationDateTime', to_timestamp('ObservationDateTime'))
-#     df = df.withColumn("TyphoonName_no_hyphen", F.regexp_replace(F.col("TyphoonName"), "-", ""))
-    
-#     typhoon_name_upper = dates[0].upper().replace("TYPHOON", "").strip()
-    
-#     if len(dates) >= 3:
-#         start = dates[1]
-#         start_date = parse_date_time(start)  # Assume parse_date_time is defined elsewhere
-#         end = dates[2]
-#         end_date = parse_date_time(end)
-#     else:
-#         start = None
-#         end = None
-    
-#     # Prepare filtering condition
-#     if start_date and end_date:
-#         filter_condition = (
-#             col("ObservationDateTime").between(start_date, end_date) &
-#             (col("TyphoonName").like(f"%{typhoon_name_upper}%") |
-#              col("TyphoonName_no_hyphen").like(f"%{typhoon_name_upper}%") |
-#              col("TyphoonName_no_hyphen").rlike(f"{typhoon_name_upper}[A-Z]+") |
-#              col("TyphoonName_no_hyphen").like(f"%{typhoon_name_upper}%".replace(" ", ""))
-#             )
-#         )
-#     elif start_date:
-#         filter_condition = (
-#             (to_date(col("ObservationDateTime")) == to_date(lit(start_date))) &
-#             (col("TyphoonName").like(f"%{typhoon_name_upper}%") |
-#              col("TyphoonName_no_hyphen").like(f"%{typhoon_name_upper}%") |
-#              col("TyphoonName_no_hyphen").rlike(f"{typhoon_name_upper}[A-Z]+") |
-#              col("TyphoonName_no_hyphen").like(f"%{typhoon_name_upper}%".replace(" ", ""))
-#             )
-#         )
-#     elif end_date:
-#         filter_condition = (
-#             (col("ObservationDateTime") <= end_date) &
-#             (col("TyphoonName").like(f"%{typhoon_name_upper}%") |
-#              col("TyphoonName_no_hyphen").like(f"%{typhoon_name_upper}%") |
-#              col("TyphoonName_no_hyphen").rlike(f"{typhoon_name_upper}[A-Z]+") |
-#              col("TyphoonName_no_hyphen").like(f"%{typhoon_name_upper}%".replace(" ", ""))
-#             )
-#         )
-#     else:
-#         filter_condition = (
-#             col("TyphoonName").like(f"%{typhoon_name_upper}%") |
-#             col("TyphoonName_no_hyphen").like(f"%{typhoon_name_upper}%") |
-#             col("TyphoonName_no_hyphen").rlike(f"{typhoon_name_upper}[A-Z]+") |
-#             col("TyphoonName_no_hyphen").like(f"%{typhoon_name_upper}%".replace(" ", ""))
-#         )
-
+  
     filtered_df = df.filter(filter_condition).select("ObservationDateTime", "Text", "TyphoonName")
     text_context = filtered_df.select("Text").collect()
     
@@ -705,6 +642,11 @@ class CustomChain:
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ### Test the Custom Chain
+
+# COMMAND ----------
+
 spark = SparkSession.builder.getOrCreate()
 llm = chat_model 
 catalog = catalog
@@ -718,7 +660,7 @@ custom_chain = CustomChain(llm, spark, catalog, schema)
 # COMMAND ----------
 
 # call the custom chain
-# user_query = "Can you show me the trajectory of Typhoon Shanshan until end of 29 Aug 2024?"
+# query = "Can you show me the trajectory of Typhoon Shanshan until end of 29 Aug 2024?"
 # query = "what is Shanshan position at the end of 29 Aug 2024 at 11pm?"
 response = custom_chain.run(query)
 print(response)
@@ -808,13 +750,6 @@ with mlflow.start_run() as run:
 
 # MAGIC %md
 # MAGIC # 07. Load Saved Model and Test
-
-# COMMAND ----------
-
-# # Make predictions
-# query_df = pd.DataFrame({"query": ["Example user query"]})
-# output = loaded_model.predict(query_df)
-# print(output)
 
 # COMMAND ----------
 
