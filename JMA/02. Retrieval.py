@@ -68,17 +68,6 @@ from llama_index.core.schema import MetadataMode
 
 # COMMAND ----------
 
-# # Import necessary PySpark modules
-# from pyspark.sql import SparkSession
-# from pyspark.sql import functions as F  # Ensure proper function imports
-
-# # Initialize a Spark session if not already done
-# spark = SparkSession.builder \
-#     .appName("MyApp") \
-#     .getOrCreate()
-
-# COMMAND ----------
-
 # MAGIC %md
 # MAGIC # 01. Parameters
 
@@ -762,3 +751,7 @@ loaded_model = mlflow.pyfunc.load_model(logged_model)
 # COMMAND ----------
 
 loaded_model.predict("What is Shanshan trajectory from 28 Aug 2024 to 29 Aug 2024?")
+
+# COMMAND ----------
+
+

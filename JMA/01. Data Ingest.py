@@ -682,10 +682,6 @@ else:
 
 # COMMAND ----------
 
-display(df)
-
-# COMMAND ----------
-
 # # Enable Change Data Feed for the Delta table - only needed once
 
 source_table_fullname = f"{catalog}.{Schema}.{table_name}"
