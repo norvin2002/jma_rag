@@ -196,8 +196,8 @@ def process_meteorological_info(row, meteorological_info):
 def process_center_info(row, prop):
     """Processes and extracts center information."""
     center_coordinate = prop["CenterPart"]["jmx_eb:Coordinate"][1]["#text"]
-    row["CenterLat"] = "{:.2f}".format(int(center_coordinate[1:5]) / 100)
-    row["CenterLon"] = "{:.2f}".format(int(center_coordinate[6:11]) / 100)
+    row["CenterLat"] = "{:.2f}".format(int(center_coordinate.split("+")[1].replace("/","").strip())/100)
+    row["CenterLon"] = "{:.2f}".format(int(center_coordinate.split("+")[2].replace("/","").strip())/100)
     row["CenterLocation"] = prop["CenterPart"]["Location"]
     row["CenterMovementDirection"] = (
         prop["CenterPart"].get("jmx_eb:Direction", {}).get("#text", np.NaN)
